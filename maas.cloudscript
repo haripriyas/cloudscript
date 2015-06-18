@@ -42,7 +42,9 @@ cat <<EOF >  /etc/apt/apt.conf.d/assumeyes
 APT::Get::force-yes "true";
 APT::Get::Assume-Yes "true";
 APT::Get::AllowUnauthenticated "true";
-EOF  
+EOF
+echo "Apt conf file is created"
+
 
 # get latest package list
 
