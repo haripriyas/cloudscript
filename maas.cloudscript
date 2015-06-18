@@ -50,9 +50,9 @@ sed -i 's/config.vm.box_url = "http:\/\/files.vagrantup.com\/precise32.box"/#con
 
 sed -i '$ s/...$//'  Vagrantfile
 
-echo config.vm.provider :libvirt do\|libvirt\|    ibvirt.driver = "qemu"    config.vm.box = "precise32"    config.vm.network "public_network",  ip: "207.188.184.46"    config.vm.network "forwarded_port", guest: 80, host: 8080      end  end >> Vagrantfile
+#echo config.vm.provider :libvirt do\|libvirt\|    ibvirt.driver = "qemu"    config.vm.box = "precise32"    config.vm.network "public_network",  ip: "207.188.184.46"    config.vm.network "forwarded_port", guest: 80, host: 8080      end  end >> Vagrantfile
  
-#sed -i 's/\r\?$/\n  config.vm.provider :libvirt do\|libvirt\|\n    ibvirt.driver = "qemu"\n    config.vm.box = "precise32"\n    config.vm.network "public_network",  ip: "207.188.184.46"\n    config.vm.network "forwarded_port", guest: 80, host: 8080 \n     end \n end/' g.txt
+sed -i 's/\r\?$/\n  config.vm.provider :libvirt do\|libvirt\|\n    ibvirt.driver = "qemu"\n    config.vm.box = "precise32"\n    config.vm.network "public_network",  ip: "207.188.184.46"\n    config.vm.network "forwarded_port", guest: 80, host: 8080 \n     end \n end/' Vagrantfile
 #sed -i 's/\r\?$/  config.vm.provider :libvirt do\|libvirt\|  ibvirt.driver = "qemu"    config.vm.box = "precise32"   config.vm.network "public_network",  ip: "207.188.184.46"   config.vm.network "forwarded_port", guest: 80, host: 8080    end  end/' g.txt 
 
 
