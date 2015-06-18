@@ -1,1 +1,117 @@
+# Install Vagrant, configure libvirt with qemu on CS2.2-SSD' # 1GB RAM, 1 vCore, 25GB SSD, 10Gbps server running Linux Ubuntu Server 14.04 LTS 64-bit
+cloudscript vagrant_with_qemu_libvirt
+    version                     = _latest  
+    result_template             = vagrant_result_template
 
+globals
+    vagrant_image_type               = 'Ubuntu Server 14.04 LTS'
+    vagrant_instance_type            = 'CS2.2 - 2GB, 2Core, 100GB, 1 Gbps'
+    vagrant_hostname                 = 'vagrantwithqemulibvirt'
+    server_password             	 = lib::random_password()
+    console_password            	 = lib::random_password()
+  
+    
+thread wordpress_setup
+    tasks                       = [vagrant_qemu_libvirt_server_setup]
+
+task vagrant_qemu_libvirt_server_setup
+
+   
+    #-------------------------
+    # create vagrant server
+    #-------------------------
+    
+    # create a new instance of vagrant box every time the cloudscript is run
+    /server/cloud vagrantwithqemulibvirt create_enumerate
+        hostname                = '{{ vagrant_hostname }}'
+        image                   = '{{ vagrant_image_type }}'
+        service_type            = '{{ vagrant_instance_type }}'
+        keys                    = [vagrant_server_password_key, vagrant_server_console_key]
+        recipes                 = [vagrant_bootstrap_recipe]
+
+text_template vagrant_bootstrap_data
+#!/bin/sh
+
+#-------------------------
+# Install packages
+#-------------------------
+
+# Automating apt-get install with --assume-yes
+
+cat <<EOF >  /etc/apt/apt.conf.d/assumeyes
+APT::Get::force-yes "true";
+APT::Get::Assume-Yes "true";
+APT::Get::AllowUnauthenticated "true";
+EOF  
+
+# get latest package list
+
+apt-get update
+
+# let the user know vagrant is coming
+echo "Vagrant is installing, please wait..." > /var/www/index.html
+
+wget https://dl.bintray.com/mitchellh/vagrant/vagrant_1.7.2_x86_64.deb
+dpkg -i vagrant_1.7.2_x86_64.deb
+apt-get install ruby
+apt-get update
+apt-get upgrade
+apt-get autoremove
+
+# Creating a vagrant box for MAAS
+
+mkdir vtest
+cd vtest
+vagrant init precise32 http://files.vagrantup.com/precise32.box
+
+# Configuring vagrant to use libvirt qemu
+sed -r 's/config.vm.box = "precise32" /#config.vm.box = "precise32"/g' Vagrantfile > Vagrantfile.bck
+mv Vagrantfile.bck Vagrantfile
+
+sed -i '$ s/...$//'  Vagrantfile 
+sed -i 's/\r\?$/\n  config.vm.provider :libvirt do\|libvirt\|\n    ibvirt.driver = "qemu"\n    config.vm.box = "precise32"\n    config.vm.network "public_network",  ip: "207.188.184.46"\n    config.vm.network "forwarded_port", guest: 80, host: 8080 \n     end \n end/' g.txt 
+
+
+
+# install other packages
+apt-get install ruby-dev
+apt-get install gcc
+apt-get install libvirt-bin
+apt-get install libvirt-dev
+gem install ruby-libvirt -v '0.5.2'
+vagrant plugin install vagrant-libvirt
+vagrant plugin install vagrant-mutate 
+vagrant box add precise32 https://vagrantcloud.com/hashicorp/boxes/precise32/versions/1.0.0/providers/virtualbox.box
+apt-get install qemu
+vagrant mutate precise32 libvirt
+vagrant box repackage precise32 libvirt 0
+vagrant init precise32
+virsh --connect qemu:///system capabilities
+
+# creating  another server
+mkdir /root/vtest2
+cd vtest2 
+vagrant init precise32
+vagrant up --provider=libvirt
+
+cd /root/vtest
+cd vtest
+
+vagrant up --provider=libvirt
+
+# SSh to vagrant box for maas installation
+vagrant ssh
+sudo apt-get update
+sudo apt-get install maas maas-dhcp maas-dns    
+sudo apt-get install links
+
+
+
+         
+         
+         
+         
+    
+         
+
+         
