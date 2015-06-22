@@ -62,16 +62,6 @@ vagrant mutate precise32 libvirt
 vagrant box repackage precise32 libvirt 0
 vagrant init precise32
 virsh --connect qemu:///system capabilities
-
-# creating  another server
-mkdir /root/vtest2
-cd vtest2 
-vagrant init precise32
-vagrant up --provider=libvirt
-
-cd /root/vtest
-cd vtest
-
 vagrant up --provider=libvirt
 
 # SSh to vagrant box for maas installation
@@ -79,3 +69,15 @@ vagrant ssh
 sudo apt-get update
 sudo apt-get install maas maas-dhcp maas-dns    
 sudo apt-get install links
+
+logout
+
+# creating  another server
+mkdir /root/vtest2
+cd vtest2 
+vagrant init precise32
+vagrant up --provider=libvirt
+
+
+
+
