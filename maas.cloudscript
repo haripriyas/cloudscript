@@ -6,11 +6,6 @@
 
 # Automating apt-get install with --assume-yes
 
-cat <<EOF >  /etc/apt/apt.conf.d/assumeyes
-APT::Get::force-yes "true";
-APT::Get::Assume-Yes "true";
-APT::Get::AllowUnauthenticated "true";
-EOF  
 
 #!/bin/sh
 cat <<EOF >  /etc/apt/apt.conf.d/assumeyes
