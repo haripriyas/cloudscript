@@ -41,12 +41,12 @@ ipVal=`ip addr | grep 'state UP' -A2 | tail -n1 | awk '{print $2}' | cut -f1  -d
 # Configuring vagrant to use libvirt qemu
 sed -i 's/config.vm.box = "precise32"/#config.vm.box = "precise32"/' Vagrantfile
 sed -i 's/config.vm.box_url = "http:\/\/files.vagrantup.com\/precise32.box"/#config.vm.box_url = "http:\/\/files.vagrantup.com\/precise32.box"/' Vagrantfile
-sed -i '$ i\ config.vm.provider :libvirt do |libvirt| \
-libvirt.driver = "qemu" \
-config.vm.box = "precise32" \
-config.vm.network "public_network", ip: "'$ipVal'" \
-config.vm.network "forwarded_port", guest: 80, host: 8080 \
-end
+sed -i '$ i\  config.vm.provider :libvirt do |libvirt| \
+    libvirt.driver = "qemu" \
+    config.vm.box = "precise32" \
+    config.vm.network "public_network", ip: "'$ipVal'" \
+    config.vm.network "forwarded_port", guest: 80, host: 8080 \
+  end
 ' Vagrantfile
 
 # install other packages
