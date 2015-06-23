@@ -65,6 +65,7 @@ vagrant init precise32
 virsh --connect qemu:///system capabilities
 vagrant up --provider=libvirt
 
+sleep 15m 
 # SSh to vagrant box for maas installation
 vagrant ssh
 sudo apt-get update
