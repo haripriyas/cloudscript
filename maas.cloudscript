@@ -75,7 +75,7 @@ logout
 
 # creating  another server
 mkdir /root/vtest2
-cd vtest2 
+cd /root/vtest2 
 vagrant init precise32
 vagrant up --provider=libvirt
 
